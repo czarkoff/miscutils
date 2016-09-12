@@ -7,7 +7,6 @@
 #include <string.h>
 #include <wchar.h>
 #include "args.h"
-#include "bprint.h"
 
 
 #define LOCALE "en_US.UTF-8"
@@ -22,7 +21,7 @@ main(int argc, char **argv)
 	int l;
 	int base, offset, ret = 0;
 	char *e, buf[UTF8_MAX_BYTES + 1];
-	char *p, byte[9];
+	char *p;
 	char ec;
 
 	if (setlocale(LC_CTYPE, LOCALE) == NULL)
@@ -58,11 +57,6 @@ main(int argc, char **argv)
 		buf[l] = '\0';
 
 		printf("U+%04lx  %s:  # %s\n", n, buf, *argv);
-
-		printf("  bin ");
-		for (p = buf; *p != '\0'; p++)
-			printf(" %s", bits(byte, *p, NULL));
-		printf("\n");
 
 		printf("  oct ");
 		for (p = buf; *p != '\0'; p++)
