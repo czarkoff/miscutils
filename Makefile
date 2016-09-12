@@ -12,7 +12,7 @@ MANDIR               ?= ${PREFIX}/man
 
 sinclude config.mk
 
-APPS ?=	bits bdecode jcuken rangecomp rme ronum ptc single unbits unutf8 utf8
+APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
 
 .MAIN: ${APPS}
 
@@ -22,7 +22,6 @@ APPS ?=	bits bdecode jcuken rangecomp rme ronum ptc single unbits unutf8 utf8
 .o:
 	${LD} -o $@ ${LDFLAGS} $>
 
-bits: bits.o bprint.o args.o
 bdecode: bdecode.o
 jcuken: jcuken.o
 rangecomp: rangecomp.o args.o
@@ -30,7 +29,6 @@ rme: rme.o
 ronum: ronum.o args.o roman.o
 ptc: ptc.o
 single: single.o
-unbits: unbits.o bprint.o args.o
 unutf8: unutf8.o args.o
 utf8: utf8.o args.o bprint.o
 
