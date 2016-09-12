@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <err.h>
 
 
 #define MAXLEN 1048576
@@ -19,8 +20,6 @@ void pindent(void);
 void pstring(char *s, uintmax_t len);
 
 
-extern char *__progname;
-
 int indent = 0;
 
 
@@ -33,14 +32,14 @@ main(int argc, char *argv[])
 
 	while (--argc) {
 		if ((fd = open(*(++argv), O_RDONLY)) < 0) {
-			fprintf(stderr, "%s: %s: %s\n", __progname, *argv, strerror(errno));
+			warn("%s", *argv);
 			errno = 0;
 			continue;
 		}
 		
 		addr = mmap(NULL, MAXLEN, PROT_READ, MAP_PRIVATE, fd, 0);
 		if (addr == MAP_FAILED) {
-			fprintf(stderr, "%s: %s: %s\n", __progname, *argv, strerror(errno));
+			warn("%s", *argv);
 			errno = 0;
 			close(fd);
 			continue;
@@ -49,19 +48,19 @@ main(int argc, char *argv[])
 		p = (char *)addr;
 		do {
 			if ((p = bdecode(p)) == NULL)
-				fprintf(stderr, "%s: %s: %s\n", __progname, *argv, strerror(errno));
+				warn("%s", *argv);
 			printf("\n");
 			while (*p == '\n')
 				p++;
 		} while (*p != '\0');
 
 		if (munmap(addr, MAXLEN) < 0) {
-			fprintf(stderr, "%s: %s: %s\n", __progname, *argv, strerror(errno));
+			warn("%s", *argv);
 			errno = 0;
 		}
 
 		if (close(fd) < 0) {
-			fprintf(stderr, "%s: %s: %s\n", __progname, *argv, strerror(errno));
+			warn("%s", *argv);
 			errno = 0;
 		}
 	}
