@@ -22,6 +22,9 @@ APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
 .o:
 	${LD} -o $@ ${LDFLAGS} $>
 
+args.c: args.h
+roman.c: roman.h
+
 bdecode: bdecode.o
 jcuken: jcuken.o
 rangecomp: rangecomp.o args.o
