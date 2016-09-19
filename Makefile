@@ -16,14 +16,18 @@ APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
 
 .MAIN: ${APPS}
 
+.PHONY: clean install uninstall info
+
+.SUFFIXES: .c .o .h
+
 .c.o:
 	${CC} -c ${CFLAGS} ${CPPFLAGS} $<
 
 .o:
-	${LD} -o $@ ${LDFLAGS} $>
+	${LD} -o $@ ${LDFLAGS} ${.ALLSRC}
 
-args.c: args.h
-roman.c: roman.h
+args.o rangecomp.o unutf8.o: args.h
+roman.o ronum.o: roman.h
 
 bdecode: bdecode.o
 jcuken: jcuken.o
