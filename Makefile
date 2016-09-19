@@ -24,7 +24,7 @@ APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
 	${CC} -c ${CFLAGS} ${CPPFLAGS} $<
 
 .o:
-	${LD} -o $@ ${LDFLAGS} ${.ALLSRC}
+	${LD} -o $@ ${LDFLAGS} ${.ALLSRC} ${LIBS}
 
 args.o rangecomp.o: args.h
 roman.o ronum.o: roman.h
@@ -62,9 +62,11 @@ info:
 	@echo "CPPFLAGS:             ${CPPFLAGS}"
 	@echo "LD:                   ${LD}"
 	@echo "LDFLAGS:              ${LDFLAGS}"
+	@echo "LIBS:                 ${LIBS}"
 	@echo "INSTALL_MAN:          ${INSTALL_MAN}"
 	@echo "INSTALL_PROGRAM:      ${INSTALL_PROGRAM}"
 	@echo "INSTALL_MAN_DIR:      ${INSTALL_MAN_DIR}"
 	@echo "INSTALL_PROGRAM_DIR:  ${INSTALL_PROGRAM_DIR}"
 	@echo "PREFIX:               ${PREFIX}"
 	@echo "BINDIR:               ${BINDIR}"
+	@echo "MANDIR:               ${MANDIR}"
