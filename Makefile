@@ -69,3 +69,6 @@ info:
 	@echo "PREFIX:               ${PREFIX}"
 	@echo "BINDIR:               ${BINDIR}"
 	@echo "MANDIR:               ${MANDIR}"
+	@for app in ${APPS}; do \
+		[ -r $${app}.1 ] || echo "  Manual for $$app missing."; \
+	done
