@@ -26,7 +26,7 @@ APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
 .o:
 	${LD} -o $@ ${LDFLAGS} ${.ALLSRC}
 
-args.o rangecomp.o unutf8.o: args.h
+args.o rangecomp.o: args.h
 roman.o ronum.o: roman.h
 
 bdecode: bdecode.o
@@ -36,14 +36,14 @@ rme: rme.o
 ronum: ronum.o args.o roman.o
 ptc: ptc.o
 single: single.o
-unutf8: unutf8.o args.o
+unutf8: unutf8.o
 utf8: utf8.o
 
 ${BINDIR}:
 	${INSTALL_PROGRAM_DIR} ${BINDIR}
 
 ${MANDIR}:
-	${INSTALL_MAN_DIR} ${MANDIR}/man1
+	${INSTALL_MAN_DIR} ${MANDIR:=/man1}
 
 install: $(BINDIR) $(MANDIR) $(APPS)
 	${INSTALL_PROGRAM} ${APPS} ${BINDIR}
