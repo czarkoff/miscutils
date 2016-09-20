@@ -1,0 +1,93 @@
+.\" Copyright (c) 2016, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: September 19 2016$
+.Dt SINGLE 1
+.Os
+.Sh NAME
+.Nm single
+.Nd run program once at a time
+.Sh SYNOPSIS
+.Nm
+.Op Fl hvw
+.Op Fl d Ar dir
+.Op Fl f Ar file
+.Ar command
+.Sh DESCRIPTION
+.Nm
+runs a comman and creates a lock, so that consequent attempts to run the same
+program using
+.Nm
+will fail until command exits.
+.Pp
+The following flags are available:
+.Bl -tag -width indent
+.It Fl d Ar dir
+Create lock file in
+.Pa dir .
+.It Fl f Ar file
+Use
+.Pa file
+for name of lock file.
+If used with
+.Fl d ,
+.Pa file
+is placed in
+.Pa dir .
+By default,
+.Nm
+uses first word from the
+.Ar command
+arguments for the name of the lock.
+.It Fl w
+If
+.Ar command
+is already locked, wait until the lock file is unlink and then continue as if
+there was no lock.
+Without this option
+.Nm
+will exit if lock file is found.
+.It Fl v
+Verbosely report locking status.
+If
+.Ar command
+is alreadly locked,
+this flag causes
+.Nm
+to report the fact and the time when the lock was acquired.
+In combination with
+.Fl w
+flag, it also causes
+.Nm
+to report when the lock is released.
+.It Fl h
+Print usage information and exit.
+.El
+.Pp
+Unless
+.Ar command
+is already locked, remaining arguments are passed to the operating system.
+.Sh CAVEATS
+.Nm
+provides no way to examine exit status of
+.Ar command .
+.Pp
+When multiple
+.Nm
+instances wait on a lock. no queuing occurs.
+There is no way to predict which instance of
+.Nm
+will run after the lock is released.
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .
