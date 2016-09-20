@@ -16,15 +16,27 @@ void usage(int ret);
 static wchar_t ru[] = L"ёЁ\"№;:?₽йцукенгшщзхъЙЦУКЕНГШЩЗХЪ/фывапролджэФЫВАПРОЛДЖЭячсмитьбю.ЯЧСМИТЬБЮ,";
 static wchar_t us[] = L"`~@#$^&*qwertyuiop[]QWERTYUIOP{}|asdfghjkl;'ASDFGHJKL:\"zxcvbnm,./ZXCVBNM<>?";
 
+int dir = 0;
+
 
 wchar_t
 jcuken(wchar_t c)
 {
 	int i;
+	wchar_t *key;
+	wchar_t *value;
 
-	for (i = 0; ru[i] != L'\0'; i++)
-		if (ru[i] == c)
-			return us[i];
+	if (dir) {
+		key = us;
+		value = ru;
+	} else {
+		key = ru;
+		value = us;
+	}
+
+	for (i = 0; key[i] != L'\0'; i++)
+		if (key[i] == c)
+			return value[i];
 
 	return c;
 }
@@ -66,7 +78,7 @@ usage(int ret)
 		out = stdout;
 	else
 		out = stderr;
-	fwprintf(out, L"Usage: %s [-f file | -s string]\n", getprogname());
+	fwprintf(out, L"Usage: %s [-r] [-f file | -s string]\n", getprogname());
 	exit(ret);
 }
 
@@ -84,7 +96,7 @@ main(int argc, char **argv)
 
 	setlocale(LC_CTYPE, "");
 
-	while ((c = getopt(argc, argv, "f:hs:")) != -1) {
+	while ((c = getopt(argc, argv, "f:hrs:")) != -1) {
 		fflag = 0;
 		sflag = 0;
 		switch(c) {
@@ -107,6 +119,9 @@ main(int argc, char **argv)
 		case 's':
 			sflag = 1;
 			s = optarg;
+			break;
+		case 'r':
+			dir = !dir;
 			break;
 		default:
 			usage(1);
