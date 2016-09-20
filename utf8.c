@@ -5,13 +5,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <wchar.h>
-#include "args.h"
 
 
 #define LOCALE "en_US.UTF-8"
 #define UTF8_MAX_BYTES 6
 #define UNICODE_MAX_VALUE 0x10FFFF
+
+#define USAGE "Usage: %s [-dho] ...\n", getprogname()
+
+#define FHEX 0x1
+#define FDEC 0x2
+#define FOCT 0x4
 
 
 int
@@ -23,11 +29,39 @@ main(int argc, char **argv)
 	char *e, buf[UTF8_MAX_BYTES + 1];
 	char *p;
 	char ec;
+	int fmt = 0, quiet = 0;
+	int c;
 
 	if (setlocale(LC_CTYPE, LOCALE) == NULL)
 		err(1, "setlocale (" LOCALE ")");
 
-	for (args_raw_init(&argc, &argv); argc--; argv++) {
+	while ((c = getopt(argc, argv, "dhoq")) != -1) {
+		switch (c) {
+			case 'd':
+				fmt |= FDEC;
+				break;
+			case 'h':
+				fmt |= FHEX;
+				break;
+			case 'o':
+				fmt |= FOCT;
+				break;
+			case 'q':
+				quiet = 1;
+				break;
+			default:
+				dprintf(STDERR_FILENO, USAGE);
+				return 1;
+		}
+	}
+	
+	if (fmt == 0)
+		fmt = FDEC | FHEX | FOCT;
+
+	if (fmt == FDEC || fmt == FHEX || fmt == FOCT)
+		quiet = 1;
+
+	for (argv += optind, argc -= optind; argc--; argv++) {
 		if (strncmp(*argv, "U+", 2) == 0) {
 			offset = 2;
 			base = 16;
@@ -43,11 +77,8 @@ main(int argc, char **argv)
 		}
 
 		n = strtoul(*argv + offset, &e, base);
-		if (*e != ec || n > UNICODE_MAX_VALUE) {
-			ret++;
-			printf("%s  invalid argument\n", *argv);
-			continue;
-		}
+		if (*e != ec || n > UNICODE_MAX_VALUE)
+			err(++ret, "invalid argument: %s", *argv);
 
 		if ((l = wctomb(buf, n)) <= 0) {
 			warnx("wctomb: %4lx", n);
@@ -56,24 +87,48 @@ main(int argc, char **argv)
 		}
 		buf[l] = '\0';
 
-		printf("U+%04lx  %s:  # %s\n", n, buf, *argv);
+		printf("U+%04lx ", n);
+		if (!quiet)
+			printf(" %s:  # %s\n", buf, *argv);
+		else
+			printf("→");
 
-		printf("  oct ");
-		for (p = buf; *p != '\0'; p++)
-			printf(" %hho", *p);
-		printf("\n");
+		if (fmt & FOCT) {
+			if (!quiet)
+				printf("  oct ");
+			else
+				printf(" ");
+			for (p = buf; *p != '\0'; p++)
+				printf(" %hho", *p);
+			if (!quiet)
+				printf("\n");
+		}
 
-		printf("  dec ");
-		for (p = buf; *p != '\0'; p++)
-			printf(" %hhu", *p);
-		printf("\n");
+		if (fmt & FDEC) {
+			if (!quiet)
+				printf("  dec ");
+			else
+				printf(" ");
+			for (p = buf; *p != '\0'; p++)
+				printf(" %hhu", *p);
+			if (!quiet)
+				printf("\n");
+		}
 
-		printf("  hex ");
-		for (p = buf; *p != '\0'; p++)
-			printf(" %#hhx", *p);
-		printf("\n");
+		if (fmt & FHEX) {
+			if (!quiet)
+				printf("  hex ");
+			else
+				printf(" ");
+			for (p = buf; *p != '\0'; p++)
+				printf(" %hhx", *p);
+			if (!quiet)
+				printf("\n");
+		}
+
+		if (quiet)
+			printf("\n");
 	}
 
-	args_free();
 	return 0;
 }

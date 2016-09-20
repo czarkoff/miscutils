@@ -33,7 +33,7 @@ ronum: ronum.o args.o roman.o
 ptc: ptc.o
 single: single.o
 unutf8: unutf8.o args.o
-utf8: utf8.o args.o
+utf8: utf8.o
 
 ${BINDIR}:
 	${INSTALL_PROGRAM_DIR} ${BINDIR}

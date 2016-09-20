@@ -1,0 +1,56 @@
+.\" Copyright (c) 2016, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: September 19 2016$
+.Dt UTF8 1
+.Os
+.Sh NAME
+.Nm utf8
+.Nd display binary form of UTF-8-encoded Unicde codepoint
+.Sh SYNOPSIS
+.Nm
+.Op Fl dhoq
+.Ar codepoint ...
+.Sh DESCRIPTION
+.Nm
+displays octal, decimal and/or hexadecimal representation of Unicode code point
+as encoded in UTF-8 encoding.
+The choice of representation depends on flags with which the program is invoced.
+If no flags were provided, all three representations are shown.
+.Pp
+.Nm
+understands following formats of arguments:
+.Bl -tag -width indent
+.It Pf U+ Em NUM
+hexadecimal Unicode codepoint
+.It Pf &# Em NUM ;
+decimal XML escape code
+.It Em NUM
+decimal Unicode codepoint
+.El
+.Pp
+The following flags are available:
+.Bl -tag -width indent
+.It Fl o
+Display octal representation.
+.It Fl d
+Display decimal representation.
+.It Fl h
+Display hexadecimal representation.
+.It Fl q
+Print one line output per codepoint.
+Implied if only one representation form is selected.
+.El
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .
