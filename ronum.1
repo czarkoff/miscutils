@@ -1,0 +1,61 @@
+.\" Copyright (c) 2016, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: September 13 2016$
+.Dt RONUM 1
+.Os
+.Sh NAME
+.Nm ronum
+.Nd convert between roman and arabic numerals
+.Sh SYNOPSIS
+.Nm
+.Op Fl chimv
+.Ar numeral ...
+.Sh DESCRIPTION
+.Nm
+converts roman numerals into arabic and vice versa.
+If no arguments provided on the command line, or if one the arguments is
+.Sq Ar - ,
+.Nm
+reads numerals from standard input.
+.Pp
+Each argument is evaluated separately.
+Arabic and roman numerals may be mixed in input.
+.Pp
+The following flags are available:
+.Bl -tag -width indent
+.It Fl c
+Use
+.Dq classic
+notation (without prefixes).
+Option has no effect when converting roman numerals to arabic.
+.It Fl i
+Ignore errors.
+By default
+.Nm
+exits upon first error.
+.It Fl m
+Use
+.Dq modern
+notation (with prefixes).
+This is the default when coverting arabic numerals into roman.
+Option has no effect when converting roman numerals to arabic.
+.It Fl v
+Verbose mode.
+Prepend input to output.
+.It Fl h
+Print usage information and exit.
+.El
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .

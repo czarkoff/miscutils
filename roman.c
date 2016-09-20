@@ -6,46 +6,48 @@
 #include "roman.h"
 
 
-char *
-roman(int n)
-{
-	char *num, *p;
-	int sz;
-	int stop[] = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
-	char *trans[] = {
-		"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" 
-	};
-	int i;
+static unsigned int stop[] = {
+	1000,
+	900, 500, 400, 100,
+	90, 50, 40, 10,
+	9, 5, 4, 1
+};
+static char *trans[] = {
+	"M",
+	"CM", "D", "CD", "C",
+	"XC", "L", "XL", "X",
+	"IX", "V", "IV", "I" , NULL
+};
 
-	if (n < 0 || n > ROMAN_MAX) {
+
+int
+roman(char *s, size_t l, unsigned int n, int classic)
+{
+	int sz = 0;
+	int i, step;
+
+	if (n > ROMAN_MAX) {
 		errno = EINVAL;
-		return NULL;
+		return -1;
 	}
 
 	/* 0 has special value */
-	if (n == 0) {
-		asprintf(&num, "nulla");
-		return num;
-	}
+	if (n == 0)
+		return snprintf(s, l, "nulla");
 
-	if ((num = malloc(1)) == NULL)
-		return NULL;
-	*num = '\0';
+	(void)memset(s, '\0', l);
 
-	for (i = 0; n != 0; i++) {
+	step = (classic) ? 2 : 1;
+	for (i = 0; n != 0; i += step) {
 		while (n >= stop[i]) {
-			sz = asprintf(&p, "%s%s", num, trans[i]);
-			free(num);
-			num = p;
-
+			if ((size_t)sz < l)
+				(void)strlcat(s, trans[i], l);
+			sz += strnlen(trans[i], 3) - 1;
 			n -= stop[i];
-
-			if (sz == -1)
-				return NULL;
 		}
 	}
 
-	return num;
+	return sz;
 }
 
 
@@ -53,8 +55,8 @@ int
 arabic(const char *s)
 {
 	int num=0;
-	const char *p;
-	int cur, last=0;
+	int i;
+	const char *ps, *pt;
 
 	if (s == NULL || *s == '\0') {
 		errno = EINVAL;
@@ -65,45 +67,22 @@ arabic(const char *s)
 	if (strcasecmp(s, "nulla") == 0)
 		return num;
 
-	/* skip to the end */
-	for (p = s; *p != '\0'; p++)
-		;
+	for (i = 0; trans[i] != NULL; i++) {
+		do {
+			for (ps = s, pt = trans[i]; *ps == *pt; ps++, pt++)
+				if (*ps == '\0')
+					break;
 
-	do {
-		switch (toupper(*(--p))) {
-			case 'I':
-				cur = 1;
-				break;
-			case 'V':
-				cur = 5;
-				break;
-			case 'X':
-				cur = 10;
-				break;
-			case 'L':
-				cur = 50;
-				break;
-			case 'C':
-				cur = 100;
-				break;
-			case 'D':
-				cur = 500;
-				break;
-			case 'M':
-				cur = 1000;
-				break;
-			default:
-				errno = EINVAL;
-				return -1;
-		}
+			if (*pt == '\0') {
+				s = ps;
+				num += stop[i];
+			}
 
-		if (cur < last)
-			num -= cur;
-		else 
-			num += cur;
+			if (*s == '\0')
+				return num;
 
-		last = cur;
-	} while (p != s);
-
-	return num;
+		} while (*pt == '\0');
+	}
+	errno = EINVAL;
+	return -1;
 }
