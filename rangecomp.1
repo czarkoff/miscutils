@@ -1,0 +1,43 @@
+.\" Copyright (c) 2016, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: September 20 2016$
+.Dt RANGECOMP 1
+.Os
+.Sh NAME
+.Nm rangecomp
+.Nd compress numerical range
+.Sh SYNOPSIS
+.Nm
+.Op Fl hi
+.Ar numeral ...
+.Sh DESCRIPTION
+.Nm
+detect and compress ranges of numbers.
+If no arguments provided on the command line
+.Nm
+reads numbers from standard input.
+.Pp
+The following flags are available:
+.Bl -tag -width indent
+.It Fl i
+Ignore errors.
+By default
+.Nm
+exits upon first error.
+.It Fl h
+Print usage information and exit.
+.El
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .
