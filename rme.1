@@ -1,0 +1,76 @@
+.\" Copyright (c) 2016, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: September 20 2016$
+.Dt RME 1
+.Os
+.Sh NAME
+.Nm rme
+.Nd remove empty files and/or directories
+.Sh SYNOPSIS
+.Nm
+.Op Fl dfhlnRv
+.Ar
+.Sh DESCRIPTION
+.Nm
+removes empty files.
+If no files are specified on command line, all files in local directory are
+verified.
+If no arguments provided on the command line
+.Pp
+The following flags are available:
+.Bl -tag -width indent
+.It Fl d
+Remove empty directories as well.
+.It Fl f
+Remove empty files.  This is the default unless
+.It Fl d
+is specified.
+.It Fl l
+Remove broken
+.Xr symlink 2 Ns s.
+.It Fl R
+Attempt to remove the file hierarchy rooted in each file argument.
+The
+.Fl R
+option implies the
+.Fl d
+option.
+.It Fl n
+Do not delete anything.
+Instead of deletion only print
+.Xr rm 1
+commands that would achieve the same result.
+If used with the flag
+.Fl v ,
+flag
+.Fl i
+is added to
+.Xr rm 1
+command.
+Output of
+.Nm
+in this mode may be safely used in shell.
+.It Fl v
+Verbosely report deletions.
+Output of
+.Nm
+with this flag is similar to syntax of
+.Xr rm 1
+command.
+.It Fl h
+Print usage information and exit.
+.El
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .

@@ -50,10 +50,12 @@ main(int argc, char *argv[])
 				break;
 			case 'R':
 				recurse = YES;
+				dirs = YES;
+				files = YES;
 				break;
 			case 'n':
 				noop = YES;
-				/* FALLTHROUGH */
+				break;
 			case 'v':
 				verbose = YES;
 				break;
@@ -72,6 +74,9 @@ main(int argc, char *argv[])
 			if (rm_empty(*argv, 0) == -1)
 				err(1, "%s", *argv);
 	}
+
+	if (noop)
+		putchar('\n');
 
 	return 0;
 }
@@ -140,17 +145,24 @@ static int
 rm(const char *path, int isdir)
 {
 	const char *p = path;
-	if (verbose) {
-		printf("rm");
-		if (noop || isdir) {
-			printf(" -");
-			if (isdir)
-				printf("d");
-			if (noop)
-				printf("i");
-		}
-		printf(" -- ");
+	static int printed = NO;
 
+	if (printed == NO && (verbose || noop)) {
+		printf("rm");
+		if (dirs || (verbose && noop))
+			printf(" -");
+		if (dirs)
+			putchar('d');
+		if (verbose && noop)
+			putchar('i');
+
+		if (noop) {
+			printf(" --");
+			printed = YES;
+		}
+	}
+	if (verbose || noop) {
+		putchar(' ');
 		for (p = path; *p == '\''; p++)
 			printf("\\\'");
 
@@ -159,11 +171,12 @@ rm(const char *path, int isdir)
 			if (putchar(*p++) == '\'')
 				printf("\\\'\'");
 		putchar('\'');
-		putchar('\n');
 	}
 
 	if (noop)
 		return 0;
+	else if (verbose)
+		putchar('\n');
 
 	return (isdir ? rmdir(path) : unlink(path));
 }
