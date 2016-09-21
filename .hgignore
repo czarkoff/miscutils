@@ -4,7 +4,6 @@ syntax: glob
 config.mk
 
 # Executables
-bits
 bdecode
 jcuken
 rangecomp
@@ -12,8 +11,6 @@ rme
 ronum
 ptc
 single
-unbits
-uncr
 unutf8
 utf8
 
@@ -21,3 +18,4 @@ utf8
 *.o
 *.core
 *.orig
+*.swp
