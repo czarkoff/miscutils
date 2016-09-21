@@ -13,9 +13,13 @@ ptc
 single
 unutf8
 utf8
+uniname
 
 # Temporary files
+NamesList.txt
+uniname.h
 *.o
 *.core
 *.orig
 *.swp
+*.tmp

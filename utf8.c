@@ -7,11 +7,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
+#include "utf8.h"
+#include "uniname.h"
 
-
-#define LOCALE "en_US.UTF-8"
-#define UTF8_MAX_BYTES 6
-#define UNICODE_MAX_VALUE 0x10FFFF
 
 #define USAGE "Usage: %s [-dho] ...\n", getprogname()
 
@@ -29,19 +27,23 @@ main(int argc, char **argv)
 	char *e, buf[UTF8_MAX_BYTES + 1];
 	char *p;
 	char ec;
-	int fmt = 0, quiet = 0;
-	int c;
+	int fmt = 0, quiet = 0, name = 0;
+	char c;
+	int i;
 
 	if (setlocale(LC_CTYPE, LOCALE) == NULL)
 		err(1, "setlocale (" LOCALE ")");
 
-	while ((c = getopt(argc, argv, "dhoq")) != -1) {
+	while ((c = getopt(argc, argv, "dhnoq")) != -1) {
 		switch (c) {
 			case 'd':
 				fmt |= FDEC;
 				break;
 			case 'h':
 				fmt |= FHEX;
+				break;
+			case 'n':
+				name = 1;
 				break;
 			case 'o':
 				fmt |= FOCT;
@@ -88,6 +90,15 @@ main(int argc, char **argv)
 		buf[l] = '\0';
 
 		printf("U+%04lx ", n);
+
+		if (name) {
+			for (i = 0; unikey[i] < UINT32_MAX; i++) {
+				if (unikey[i] == n) {
+					printf("(%s) ", univalue[i]);
+					break;
+				}
+			}
+		}
 		if (!quiet)
 			printf(" %s:  # %s\n", buf, *argv);
 		else

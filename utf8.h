@@ -1,0 +1,3 @@
+#define UNICODE_MAX_VALUE 0x10FFFF
+#define LOCALE "en_US.UTF-8"
+#define UTF8_MAX_BYTES 6

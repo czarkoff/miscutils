@@ -7,10 +7,9 @@
 #include <errno.h>
 #include <err.h>
 #include <wchar.h>
+#include "utf8.h"
+#include "uniname.h"
 
-
-#define LOCALE "en_US.UTF-8"
-#define UTF8_MAX_BYTES 6
 
 #define HEX 0x1
 #define DEC 0x2
@@ -21,6 +20,7 @@ void stou_out(const char *);
 
 int verbose = 0;
 int fmt = 0;
+int name = 0;
 
 
 void
@@ -28,6 +28,7 @@ stou_out(const char *s)
 {
 	wchar_t wc;
 	int l;
+	int i;
 	char buf[UTF8_MAX_BYTES + 1];
 
 	for (l = 0; *s != '\0'; s += l) {
@@ -60,6 +61,14 @@ stou_out(const char *s)
 			printf("\t");
 		if (fmt & DEC)
 			printf("&#%d;", wc);
+		if (name) {
+			for (i = 0; unikey[i] < UINT32_MAX; i++) {
+				if (unikey[i] == (uint32_t)wc) {
+					printf("\t(%s) ", univalue[i]);
+					break;
+				}
+			}
+		}
 		printf("\n");
 	}
 }
@@ -68,21 +77,25 @@ stou_out(const char *s)
 int
 main(int argc, char **argv)
 {
-	size_t len;
-	char c, *s;
+	size_t sz = 0;
+	ssize_t len;
+	char c, *s = NULL;
 	int ret = 0;
 	int separate = 0;
 
 	if (setlocale(LC_CTYPE, LOCALE) == NULL)
 		err(1, "setlocale (" LOCALE ")");
 
-	while ((c = getopt(argc, argv, "dhsvx")) != -1) {
+	while ((c = getopt(argc, argv, "dhnsvx")) != -1) {
 		switch (c) {
 			case 'd':
 				fmt |= DEC;
 				break;
 			case 'x':
 				fmt |= HEX;
+				break;
+			case 'n':
+				name = 1;
 				break;
 			case 's':
 				separate = 1;
@@ -111,12 +124,17 @@ main(int argc, char **argv)
 		}
 
 	} else {
-		while ((s = fgetln(stdin, &len)) != NULL) {
-			s[len - 1] = '\0';
+		while ((len = getline(&s, &sz, stdin)) != -1) {
+			if (s[len - 1] != '\n') {
+				if ((s = realloc(s, ++sz)) == NULL)
+					err(1, NULL);
+				s[len++] = '\n';
+				s[len] = '\0';
+			}
 			stou_out(s);
 		}
 		if (ferror(stdin))
-			err(1, "fgetln");
+			err(1, "getline");
 	}
 
 	return ret;

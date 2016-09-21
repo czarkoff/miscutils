@@ -1,6 +1,6 @@
 CC                   ?= clang
 LD                   := ${CC}
-CFLAGS               ?= -Wall -Wextra
+CFLAGS               ?= -O2 -pipe -Wall -Wextra
 CFLAGS               += -std=c99 -pedantic
 INSTALL_MAN          ?= install -c -m 644
 INSTALL_PROGRAM      ?= install -c -m 755
@@ -9,10 +9,12 @@ INSTALL_PROGRAM_DIR  ?= install -d -m 755
 PREFIX               ?= /usr/local
 BINDIR               ?= ${PREFIX}/bin
 MANDIR               ?= ${PREFIX}/man
+FETCH_CMD            ?= curl -OsS
 
 sinclude config.mk
 
 APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
+EXTRA ?= uniname uniname.h uniname.tmp
 
 .MAIN: ${APPS}
 
@@ -33,8 +35,31 @@ rme: rme.o
 ronum: ronum.o
 ptc: ptc.o
 single: single.o
+uniname: uniname.o
 unutf8: unutf8.o
 utf8: utf8.o
+
+uniname.c unutf8.c utf8.c: utf8.h
+unutf8.c utf8.c: uniname.h
+
+uniname.tmp: NamesList.txt uniname
+	./uniname > uniname.tmp
+	
+uniname.h: NamesList.txt uniname.tmp
+	echo '#include <limits.h>' > uniname.h
+	echo >> uniname.h
+	echo 'uint32_t unikey[] = {' >> uniname.h
+	sed 's/^\([0-9]\{1,\}\) .\{1,\}/  \1,/' uniname.tmp >> uniname.h
+	echo '  UINT32_MAX' >> uniname.h
+	echo '};' >> uniname.h
+	echo >> uniname.h
+	echo 'char *univalue[] = {' >> uniname.h
+	sed 's/^[0-9]\{1,\} \(.\{1,\}\)/  \"\1\",/' uniname.tmp >> uniname.h
+	echo '  "error"' >> uniname.h
+	echo '};' >> uniname.h
+
+NamesList.txt:
+	${FETCH_CMD} http://unicode.org/Public/UNIDATA/NamesList.txt
 
 ${BINDIR}:
 	${INSTALL_PROGRAM_DIR} ${BINDIR}
@@ -50,7 +75,7 @@ uninstall:
 	rm -f ${APPS:%=${BINDIR}/%} ${APPS:%=${MANDIR}/man1/%.1}
 
 clean:
-	rm -Rf *.o *.core ${APPS}
+	rm -Rf *.o *.core ${APPS} ${EXTRA}
 
 info:
 	@echo "APPS:                 ${APPS}"
