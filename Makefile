@@ -47,21 +47,22 @@ uniname.tmp: NamesList.txt uniname
 	./uniname > uniname.tmp
 	
 uniname.h: NamesList.txt uniname.tmp
-	echo  '/*'                                                  > uniname.h
-	echo  ' * This file is generated automatically.'           >> uniname.h
-	echo  ' * Do NOT edit.'                                    >> uniname.h
-	echo  ' */'                                                >> uniname.h
-	echo  '#include <limits.h>'                                >> uniname.h
+	echo   '/*'                                                 > uniname.h
+	echo   ' * This file is generated automatically.'          >> uniname.h
+	echo   ' *'                                                >> uniname.h
+	echo   ' * Do NOT edit.'                                   >> uniname.h
+	echo   ' */'                                               >> uniname.h
+	echo   '#include <limits.h>'                               >> uniname.h
 	echo                                                       >> uniname.h
-	echo  'uint32_t unikey[] = {'                              >> uniname.h
-	sed   's/^\([0-9]\{1,\}\) .\{1,\}/  \1,/' uniname.tmp      >> uniname.h
-	echo  '  UINT32_MAX'                                       >> uniname.h
-	echo  '};'                                                 >> uniname.h
+	echo   'uint32_t unikey[] = {'                             >> uniname.h
+	sed -r 's/^([0-9]+) .+/	\1,/' uniname.tmp                  >> uniname.h
+	echo   '	UINT32_MAX'                                >> uniname.h
+	echo   '};'                                                >> uniname.h
 	echo                                                       >> uniname.h
-	echo  'char *univalue[] = {'                               >> uniname.h
-	sed   's/^[0-9]\{1,\} \(.\{1,\}\)/  \"\1\",/' uniname.tmp  >> uniname.h
-	echo  '  "error"'                                          >> uniname.h
-	echo  '};'                                                 >> uniname.h
+	echo   'char *univalue[] = {'                              >> uniname.h
+	sed -r 's/^[0-9]+ (.+)/	\"\1\",/' uniname.tmp              >> uniname.h
+	echo   '	"error"'                                   >> uniname.h
+	echo   '};'                                                >> uniname.h
 
 NamesList.txt:
 	${FETCH_CMD} ${UCD_URL}
