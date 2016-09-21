@@ -1,0 +1,23 @@
+syntax: glob
+
+# User config
+config.mk
+
+# Executables
+bits
+bdecode
+jcuken
+rangecomp
+rme
+ronum
+ptc
+single
+unbits
+uncr
+unutf8
+utf8
+
+# Temporary files
+*.o
+*.core
+*.orig

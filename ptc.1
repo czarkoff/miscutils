@@ -1,0 +1,128 @@
+.\" Copyright (c) 2014, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: February 17 2014$
+.Dt PTC 1
+.Os
+.Sh NAME
+.Nm ptc
+.Nd calculate time
+.Sh SYNOPSIS
+.Nm
+.Sh DESCRIPTION
+.Nm
+is a stacking (reverse Polish) calculator similar to
+.Xr dc 1 ,
+but crafted towards time calculation.
+.Nm
+reads commands from standard input and performs requested operations.
+Currently the following constructions are recognized:
+.Bl -tag -width "number"
+.It Va number
+The value of the number is pushed on the stack. The values are parsed
+according to the following rules:
+.Bl -enum
+.It
+If value contains
+.Sq \&.
+.Pq dot ,
+it is assumed to be in format
+.Do
+.Sm off
+.Oo Oo Oo
+.Ar HH: Oc
+.Ar MM: Oc
+.Ar SS Oc No \&. Ns Op Ar MSS
+.Sm on
+.Dc .
+.It
+If value contains
+.Sq \:
+.Pq column ,
+it is assumed to be in format
+.Do
+.Sm off
+.Ar HH:MM
+.Oo Ar :SS
+.Oc
+.Sm on
+.Dc
+.It
+If value contains only digits, it is assumed to be expressed in
+.Em milliseconds .
+Value may also contain specifiers
+.Sq d ,
+.Sq h ,
+.Sq m ,
+or
+.Sq s
+for
+.Em days ,
+.Em hours ,
+.Em minutes ,
+or
+.Em seconds .
+.El
+where
+.Sq HH ,
+.Sq MM ,
+.Sq SS
+and
+.Sq MSS
+stand for
+.Em hours ,
+.Em minutes ,
+.Em seconds
+and
+.Em milliseconds
+respectively. Negative numbers are denoted with
+.Sq _
+.Pq underscore .
+.It Cm "+ - / * %"
+The top two values on the stack are added
+.Pq + ,
+substracted
+.Pq \- ,
+multiplied
+.Pq * ,
+divided
+.Pq / ,
+or remaindered
+.Pq % .
+The two entries are popped off the stack;
+the result is pushed on the stack in their place.
+.It Ic t
+Pop all the values on the stack and push their total.
+.It Ic p
+The top value on the stack is printed with a trailing newline.
+The top value remains unchanged.
+.El
+.Sh SEE ALSO
+.Xr dc 1
+.Sh AUTHORS
+.An -nosplit
+The
+.Nm
+utility was written by
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .
+.Sh CAVEATS
+In
+.Nm
+time values are internally represented as integer amounts of milliseconds.
+While theoretically this approach improves the precision of operations, the
+result of devision operation suffers from rounding.
+.Pp
+.Nm
+is currently in early stages of development, so anything may be subject to
+future changes.
