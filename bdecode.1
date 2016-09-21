@@ -1,0 +1,68 @@
+.\" Copyright (c) 2016, Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: September 20 2016$
+.Dt BDECODE 1
+.Os
+.Sh NAME
+.Nm bdecode
+.Nd convert from benc to JSON
+.Sh SYNOPSIS
+.Nm
+.Op Fl adhlO
+.Op Fl o Ar file
+.Ar
+.Sh DESCRIPTION
+.Nm
+reads benc-encoded input and outputs converted into JSON.
+If no arguments provided on the command line, or special argument
+.Sq Ar -
+is provided,
+.Nm
+reads input from standard input.
+.Pp
+Following flags are available:
+.Bl -tag -width indent
+.It Fl a
+Enclose multiple inputs in a JSON array.
+This is the default.
+.It Fl d
+Enclose multiple inputs in a JSON object.
+File names of inputs are used for keys.
+.It Fl o Ar file
+Save output to
+.Pa file .
+If
+.Pa file
+is
+.Sq - ,
+output is redirected to standard output.
+.It Fl O
+For each input, create an output file with extension
+.Dq .json .
+This flag cannot be used with flags
+.Fl a ,
+.Fl d
+and
+.Fl o .
+.It Fl l
+When used with
+.Fl O ,
+only basenames of input files are used for output names.
+Output files are stored in current directory.
+.It Fl h
+Print usage information and exit.
+.El
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .
