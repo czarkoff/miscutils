@@ -10,6 +10,7 @@ PREFIX               ?= /usr/local
 BINDIR               ?= ${PREFIX}/bin
 MANDIR               ?= ${PREFIX}/man
 FETCH_CMD            ?= curl -OsS
+UCD_URL              ?= http://unicode.org/Public/UNIDATA/NamesList.txt
 
 sinclude config.mk
 
@@ -46,7 +47,11 @@ uniname.tmp: NamesList.txt uniname
 	./uniname > uniname.tmp
 	
 uniname.h: NamesList.txt uniname.tmp
-	echo  '#include <limits.h>'                                 > uniname.h
+	echo  '/*'                                                  > uniname.h
+	echo  ' * This file is generated automatically.'           >> uniname.h
+	echo  ' * Do NOT edit.'                                    >> uniname.h
+	echo  ' */'                                                >> uniname.h
+	echo  '#include <limits.h>'                                >> uniname.h
 	echo                                                       >> uniname.h
 	echo  'uint32_t unikey[] = {'                              >> uniname.h
 	sed   's/^\([0-9]\{1,\}\) .\{1,\}/  \1,/' uniname.tmp      >> uniname.h
@@ -59,7 +64,7 @@ uniname.h: NamesList.txt uniname.tmp
 	echo  '};'                                                 >> uniname.h
 
 NamesList.txt:
-	${FETCH_CMD} http://unicode.org/Public/UNIDATA/NamesList.txt
+	${FETCH_CMD} ${UCD_URL}
 
 ${BINDIR}:
 	${INSTALL_PROGRAM_DIR} ${BINDIR}
