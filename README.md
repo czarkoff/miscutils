@@ -68,7 +68,7 @@ $ make
 
 ## Using GNU make
 
-Unfortunately, GNU Project's `make` software derived in its syntax from classic
+Unfortunately, GNU Project's `make` software diverged in its syntax from classic
 BSD `make` implementations.  So far, users of GNU `make` have two options:
 
 1. Switch to BSD `make`.
