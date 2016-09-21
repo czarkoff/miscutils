@@ -46,17 +46,17 @@ uniname.tmp: NamesList.txt uniname
 	./uniname > uniname.tmp
 	
 uniname.h: NamesList.txt uniname.tmp
-	echo '#include <limits.h>' > uniname.h
-	echo >> uniname.h
-	echo 'uint32_t unikey[] = {' >> uniname.h
-	sed 's/^\([0-9]\{1,\}\) .\{1,\}/  \1,/' uniname.tmp >> uniname.h
-	echo '  UINT32_MAX' >> uniname.h
-	echo '};' >> uniname.h
-	echo >> uniname.h
-	echo 'char *univalue[] = {' >> uniname.h
-	sed 's/^[0-9]\{1,\} \(.\{1,\}\)/  \"\1\",/' uniname.tmp >> uniname.h
-	echo '  "error"' >> uniname.h
-	echo '};' >> uniname.h
+	echo  '#include <limits.h>'                                 > uniname.h
+	echo                                                       >> uniname.h
+	echo  'uint32_t unikey[] = {'                              >> uniname.h
+	sed   's/^\([0-9]\{1,\}\) .\{1,\}/  \1,/' uniname.tmp      >> uniname.h
+	echo  '  UINT32_MAX'                                       >> uniname.h
+	echo  '};'                                                 >> uniname.h
+	echo                                                       >> uniname.h
+	echo  'char *univalue[] = {'                               >> uniname.h
+	sed   's/^[0-9]\{1,\} \(.\{1,\}\)/  \"\1\",/' uniname.tmp  >> uniname.h
+	echo  '  "error"'                                          >> uniname.h
+	echo  '};'                                                 >> uniname.h
 
 NamesList.txt:
 	${FETCH_CMD} http://unicode.org/Public/UNIDATA/NamesList.txt
