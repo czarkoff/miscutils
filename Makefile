@@ -1,4 +1,4 @@
-CC                   ?= clang
+CC                   ?= cc
 LD                   := ${CC}
 CFLAGS               ?= -O2 -pipe -Wall -Wextra
 CFLAGS               += -std=c99 -pedantic
