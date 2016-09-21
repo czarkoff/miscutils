@@ -1,3 +1,5 @@
+sinclude config.mk
+
 CC                   ?= cc
 LD                   := ${CC}
 CFLAGS               ?= -O2 -pipe -Wall -Wextra
@@ -11,8 +13,6 @@ BINDIR               ?= ${PREFIX}/bin
 MANDIR               ?= ${PREFIX}/man
 FETCH_CMD            ?= curl -OsS
 UCD_URL              ?= http://unicode.org/Public/UNIDATA/NamesList.txt
-
-sinclude config.mk
 
 APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 utf8
 EXTRA ?= uniname uniname.h uniname.tmp
