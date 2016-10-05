@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <err.h>
+#include "binary.h"
 
 
 #define BUFMUL sizeof(uintmax_t)
@@ -14,7 +15,7 @@
 #define STEP 16
 
 
-char *binary(char *, uintmax_t);
+char *masktobin(uintmax_t);
 uintmax_t bintomask(char *);
 char *expand(char *, char *);
 uintmax_t strtomask(char *);
@@ -29,7 +30,8 @@ int
 main(int argc, char **argv)
 {
 	char **arr;
-	char buf[BUFSZ];
+	char *bin;
+	uintmax_t mask;
 	size_t arrsz = 0, i, num;
 
 	int c;
@@ -87,18 +89,24 @@ main(int argc, char **argv)
 	}
 	for (i = 0; i < num; i++) {
 		if (reverse) {
+			mask = bintomask(arr[i]);
+			if ((bin = masktobin(mask)) == NULL)
+				err(1, "%s", arr[i]);
 			if (verbose)
-				printf("%s → ", expand(buf, arr[i]));
+				printf("%s → ", bin);
 			printf(of, bintomask(arr[i]));
 			putchar('\n');
 		} else {
+			mask = strtomask(arr[i]);
+			if ((bin = masktobin(mask)) == NULL)
+				err(1, "%s", arr[i]);
 			if (verbose) {
-				printf(of, strtomask(arr[i]));
+				printf(of, mask);
 				printf(" → ");
 			}
-			printf("%s", binary(buf, strtomask(arr[i])));
-			putchar('\n');
+			printf("%s\n", bin);
 		}
+		free(bin);
 	}
 	if (arr != argv)
 		free(arr);
@@ -108,61 +116,19 @@ main(int argc, char **argv)
 
 
 char *
-binary(char *dst, uintmax_t src)
+masktobin(uintmax_t mask)
 {
-	char *p;
-	uintmax_t n;
-	size_t len;
+	uint8_t bytes[sizeof(uintmax_t)];
+	int i = sizeof(uintmax_t);
+	int flags = BSKIP;
 
-	for (n = 1, p = dst; n < src; n <<= 8)
-		p += (gaps ? 9 : 8);
+	while (i--) {
+		bytes[i] = mask & 0xFF;
+		mask >>= 8;
+	}
 	if (gaps)
-		p--;
-	for (*p-- = '\0', len = 0; src; src >>= 1, len++) {
-		if (gaps && len % 8 == 0 && len != 0)
-			*p-- = ' ';
-		*p-- = sym[src & 1];
-	}
-
-	while (p >= dst)
-		*p-- = sym[0];
-
-	return dst;
-}
-
-
-char *
-expand(char *dst, char *src)
-{
-	char *s = src, *d = dst;
-	size_t len;
-
-	for (s = src, len = 0; *s; s++) {
-		if (strchr(sym, *s))
-			len++;
-		else if (gaps && isspace(*s))
-			continue;
-		else
-			errx(1, "%s: %s", src, strerror(EINVAL));
-	}
-	if (len == 0)
-		errx(1, "%s: %s", src, strerror(EINVAL));
-
-	for (d = dst; len % 8; len++, *d++ = sym[0]);
-
-	for (s = src; *s; s++) {
-		if (strchr(sym, *s) == NULL)
-			continue;
-		*d++ = *s;
-		if (--len == 0)
-			break;
-		else if (gaps && len % 8 == 0) {
-			*d++ = ' ';
-		}
-	}
-	*d = '\0';
-
-	return dst;
+		flags |= BGROUP;
+	return binary(bytes, sizeof(uintmax_t), sym, flags);
 }
 
 

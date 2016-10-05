@@ -31,7 +31,7 @@ EXTRA ?= uniname uniname.h uniname.tmp
 	${LD} -o $@ ${LDFLAGS} ${.ALLSRC} ${LIBS}
 
 bdecode: bdecode.o
-bitmask: bitmask.o
+bitmask: binary.o bitmask.o
 jcuken: jcuken.o
 rangecomp: rangecomp.o
 rme: rme.o
@@ -43,6 +43,7 @@ unutf8: unutf8.o
 urldecode: urldecode.o
 utf8: utf8.o
 
+binary.c bitmask.c: binary.h
 uniname.c unutf8.c utf8.c: utf8.h
 unutf8.c utf8.c: uniname.h
 
