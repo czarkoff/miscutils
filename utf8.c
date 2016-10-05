@@ -23,6 +23,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
+#include "binary.h"
 #include "utf8.h"
 #include "uniname.h"
 
@@ -32,6 +33,7 @@
 #define FHEX 0x1
 #define FDEC 0x2
 #define FOCT 0x4
+#define FBIN 0x8
 
 
 int
@@ -50,8 +52,11 @@ main(int argc, char **argv)
 	if (setlocale(LC_CTYPE, LOCALE) == NULL)
 		err(1, "setlocale (" LOCALE ")");
 
-	while ((c = getopt(argc, argv, "dhnoq")) != -1) {
+	while ((c = getopt(argc, argv, "bdhnoq")) != -1) {
 		switch (c) {
+			case 'b':
+				fmt |= FBIN;
+				break;
 			case 'd':
 				fmt |= FDEC;
 				break;
@@ -74,7 +79,7 @@ main(int argc, char **argv)
 	}
 	
 	if (fmt == 0)
-		fmt = FDEC | FHEX | FOCT;
+		fmt = FBIN | FDEC | FHEX | FOCT;
 
 	if (fmt == FDEC || fmt == FHEX || fmt == FOCT)
 		quiet = 1;
@@ -120,6 +125,17 @@ main(int argc, char **argv)
 		else
 			printf("→");
 
+		if (fmt & FBIN) {
+			if (!quiet)
+				printf("  bin ");
+			else
+				printf(" ");
+			l = strnlen(buf, UTF8_MAX_BYTES + 1);
+			p = binary((uint8_t *)buf, l, NULL, BGROUP);
+			printf(" %s", p);
+			if (!quiet)
+				printf("\n");
+		}
 		if (fmt & FOCT) {
 			if (!quiet)
 				printf("  oct ");

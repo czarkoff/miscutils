@@ -41,9 +41,9 @@ single: single.o
 uniname: uniname.o
 unutf8: unutf8.o
 urldecode: urldecode.o
-utf8: utf8.o
+utf8: binary.o utf8.o
 
-binary.c bitmask.c: binary.h
+binary.c bitmask.c utf8.c: binary.h
 uniname.c unutf8.c utf8.c: utf8.h
 unutf8.c utf8.c: uniname.h
 
