@@ -7,6 +7,8 @@ although that may change over time.
 * `bdecode` reads benc-encoded input and outputs converted into JSON. If no
   arguments provided on the command line, or special argument ‘-’ is provided,
   `bdecode` reads input from standard input.
+* `bitmask` converts bit masks to binary representations.  If no arguments
+  provided on the command line, `bitmask` reads bit masks from standard input.
 * `jcuken` changes input so as if instead of “ru” keyboard layout it was typed
   with “us” keyboard layout. By default, `jcuken` reads standard input.
 * `rangecomp` detect and compress ranges of numbers. If no arguments provided

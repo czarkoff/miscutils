@@ -5,6 +5,7 @@ config.mk
 
 # Executables
 bdecode
+bitmask
 jcuken
 rangecomp
 rme

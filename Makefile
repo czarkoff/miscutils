@@ -14,7 +14,8 @@ MANDIR               ?= ${PREFIX}/man
 FETCH_CMD            ?= curl -OsS
 UCD_URL              ?= http://unicode.org/Public/UNIDATA/NamesList.txt
 
-APPS ?=	bdecode jcuken rangecomp rme ronum ptc single unutf8 urldecode utf8
+APPS ?= bdecode bitmask jcuken rangecomp rme ronum ptc single unutf8 urldecode \
+        utf8
 EXTRA ?= uniname uniname.h uniname.tmp
 
 .MAIN: ${APPS}
@@ -30,6 +31,7 @@ EXTRA ?= uniname uniname.h uniname.tmp
 	${LD} -o $@ ${LDFLAGS} ${.ALLSRC} ${LIBS}
 
 bdecode: bdecode.o
+bitmask: bitmask.o
 jcuken: jcuken.o
 rangecomp: rangecomp.o
 rme: rme.o
