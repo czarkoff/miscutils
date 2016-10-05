@@ -7,6 +7,8 @@
 
 
 #define num(x) ((x > '9') ? (x - 'A' + 10) : (x - '0'))
+
+
 int
 main(void)
 {
