@@ -49,7 +49,7 @@ main(void)
 		if (isxdigit(*s)) {
 			if (descr != NULL) {
 				if (printf("%lld %s\n", cp, descr) < 0)
-					err(1, "stdout", NULL);
+					err(1, "stdout");
 				free(descr);
 				descr = NULL;
 			}
@@ -89,7 +89,7 @@ main(void)
 		err(1, NAMELIST);
 	if (descr != NULL) {
 		if (printf("%lld %s\n", cp, descr) < 0)
-			err(1, "stdout", NULL);
+			err(1, "stdout");
 		free(descr);
 	}
 
