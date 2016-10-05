@@ -22,6 +22,7 @@ although that may change over time.
 * `unutf8` decodes UTF-8-encoded text and prints Unicode codepoints, one per
   line. If no arguments provided on the command line, `unutf8` reads text from
   standard input.
+* `urldecode` decodes url from standard input and prints it to standard output.
 * `utf8` displays octal, decimal and/or hexadecimal representation of Unicode
   code point as encoded in UTF-8 encoding. The choice of representation depends
   on flags with which the program is invoced.  If no flags were provided, all
