@@ -53,8 +53,11 @@ stou_out(const char *s)
 		if (l == 0)
 			return;
 
-		if (l == -1)
-			err(1, "mbtowc");
+		if (l == -1) {
+			printf("0x%02X\t%s\n", *s & 0xff, strerror(errno));
+			l = 1;
+			continue;
+		}
 		
 		strlcpy(buf, s, l + 1);
 		if (verbose) {
