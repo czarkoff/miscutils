@@ -54,7 +54,7 @@ stou_out(const char *s)
 			return;
 
 		if (l == -1) {
-			printf("0x%02X\t%s\n", *s & 0xff, strerror(errno));
+			printf("0x%02hhX\t%s\n", *s, strerror(errno));
 			l = 1;
 			continue;
 		}
