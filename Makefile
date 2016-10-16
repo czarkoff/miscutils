@@ -13,10 +13,21 @@ BINDIR               ?= ${PREFIX}/bin
 MANDIR               ?= ${PREFIX}/man
 FETCH_CMD            ?= curl -OsS
 UCD_URL              ?= http://unicode.org/Public/UNIDATA/NamesList.txt
+EXTRA                := uniname uniname.h uniname.tmp
+APPS                 ?= bdecode bitmask jcuken rangecomp rme ronum ptc single \
+			unutf8 urldecode utf8
 
-APPS ?= bdecode bitmask jcuken rangecomp rme ronum ptc single unutf8 urldecode \
-        utf8
-EXTRA ?= uniname uniname.h uniname.tmp
+
+NAMED_APPS =
+.for t in ${.TARGETS}
+. if ${APPS:M$t}
+NAMED_APPS += $t
+. endif
+.endfor
+.if !empty(NAMED_APPS)
+APPS := ${NAMED_APPS}
+.endif
+
 
 .MAIN: ${APPS}
 

@@ -46,6 +46,8 @@ are unacceptable, the following variable may be used to configure the build:
 * Variable `APPS` controls which applications will be built by default.
   Building particular set of applications may be achieved by either setting this
   variable or listing them as arguments to `make`.
+  For user convenience `APPS` is automatically set to the list of applications
+  mentioned in `make` flags.
 * Build process my be tuned by setting `CC`, `CFLAGS`, `CPPFLAGS`, `LD`,
   `LDFLAGS` and `LIBS`.  All of these variables mean exactly what they mean
   elsewhere around Unixes.
