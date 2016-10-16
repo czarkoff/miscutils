@@ -35,7 +35,8 @@ void stou_out(const char *);
 
 
 int verbose = 0;
-int fmt = 0;
+int fmt_in = 0;
+int fmt_out = 0;
 int name = 0;
 
 
@@ -61,24 +62,29 @@ stou_out(const char *s)
 		
 		strlcpy(buf, s, l + 1);
 		if (verbose) {
-			switch (wcwidth(wc)) {
-				case -1:
-					printf("*NP*");
-					break;
-				case 0:
-					printf(" %s", buf);
-					break;
-				default:
-					printf("%s", buf);
-					break;
+			if (fmt_in) {
+				for (i = 0; i < l; i++)
+					printf("%02hhX", buf[i]);
+			} else {
+				switch (wcwidth(wc)) {
+					case -1:
+						printf("*NP*");
+						break;
+					case 0:
+						printf(" %s", buf);
+						break;
+					default:
+						printf("%s", buf);
+						break;
+				}
 			}
 			printf("\t");
 		}
-		if (fmt & HEX)
+		if (fmt_out & HEX)
 			printf("U+%04X", wc);
-		if (fmt & (HEX|DEC))
+		if (fmt_out & (HEX|DEC))
 			printf("\t");
-		if (fmt & DEC)
+		if (fmt_out & DEC)
 			printf("&#%d;", wc);
 		if (name) {
 			for (i = 0; unikey[i] < UINT32_MAX; i++) {
@@ -105,13 +111,16 @@ main(int argc, char **argv)
 	if (setlocale(LC_CTYPE, LOCALE) == NULL)
 		err(1, "setlocale (" LOCALE ")");
 
-	while ((c = getopt(argc, argv, "dhnsvx")) != -1) {
+	while ((c = getopt(argc, argv, "bdhnsvx")) != -1) {
 		switch (c) {
+			case 'b':
+				fmt_in = 1;
+				break;
 			case 'd':
-				fmt |= DEC;
+				fmt_out |= DEC;
 				break;
 			case 'x':
-				fmt |= HEX;
+				fmt_out |= HEX;
 				break;
 			case 'n':
 				name = 1;
@@ -132,8 +141,8 @@ main(int argc, char **argv)
 		}
 	}
 
-	if (fmt == 0)
-		fmt = HEX;
+	if (fmt_out == 0)
+		fmt_out = HEX;
 
 	if (argc -= optind) {
 		for (argv += optind; argc--; argv++) {
