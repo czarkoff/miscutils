@@ -46,6 +46,7 @@ are unacceptable, the following variable may be used to configure the build:
 * Variable `APPS` controls which applications will be built by default.
   Building particular set of applications may be achieved by either setting this
   variable or listing them as arguments to `make`.
+
   For user convenience `APPS` is automatically set to the list of applications
   mentioned in `make` flags.
 * Build process my be tuned by setting `CC`, `CFLAGS`, `CPPFLAGS`, `LD`,
@@ -70,11 +71,3 @@ $ make
 ```
 
 (Depending on choice of installation location `root` access may be unnecessary.
-
-## Using GNU make
-
-Unfortunately, GNU Project's `make` software diverged in its syntax from classic
-BSD `make` implementations.  So far, users of GNU `make` have two options:
-
-1. Switch to BSD `make`.
-2. Put `.ALLSRC = $^` in `config.mk`.
