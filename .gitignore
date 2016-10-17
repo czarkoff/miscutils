@@ -1,8 +1,11 @@
+syntax: glob
+
 # User config
 config.mk
 
 # Executables
 bdecode
+bitmask
 jcuken
 rangecomp
 rme
@@ -10,6 +13,7 @@ ronum
 ptc
 single
 unutf8
+urldecode
 utf8
 uniname
 
