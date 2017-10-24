@@ -23,6 +23,8 @@
 .Op Fl hvw
 .Op Fl d Ar dir
 .Op Fl f Ar file
+.Op Fl r Ar sec
+.Op Fl t Ar sec
 .Ar command
 .Sh DESCRIPTION
 .Nm
@@ -50,6 +52,14 @@ By default,
 uses first word from the
 .Ar command
 arguments for the name of the lock.
+.It Fl r Ar sec
+Sleep for random amount of seconds between 0 and
+.Ar sec
+before executing command.
+.It Fl t Ar sec
+Sleep for
+.Ar sec
+seconds before executing command.
 .It Fl w
 If
 .Ar command
@@ -78,6 +88,12 @@ Print usage information and exit.
 Unless
 .Ar command
 is already locked, remaining arguments are passed to the operating system.
+.Pp
+If both
+.Dq Fl r
+and
+.Dq Fl t
+flags are used, respective delays are added up.
 .Sh CAVEATS
 .Nm
 provides no way to examine exit status of

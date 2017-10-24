@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <libgen.h>
+#include <inttypes.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -57,9 +58,8 @@ static char *exe = NULL;
 static void
 usage(int ec)
 {
-  FILE *stream;
-  stream = ec ? stderr : stdin;
-  fprintf(stream, "usage: %s [-vw] [-d lockdir] [-f lockfile] [--] command\n", getprogname());
+  FILE *stream = ec ? stderr : stdin;
+  fprintf(stream, "usage: %s [-vw] [-d lockdir] [-f lockfile] [-r timeout] [-t timeout] [--] command\n", getprogname());
   exit(ec);
 }
 
@@ -157,8 +157,10 @@ main(int argc, char **argv)
   int status;
   char dir[PATH_MAX] = LOCKDIR, fn[PATH_MAX] = "";
   char opt;
+  char const *er = NULL;
+  size_t timeout = 0, rtimeout = 0;
 
-  while ((opt = getopt(argc, argv, "f:hvw")) != -1) {
+  while ((opt = getopt(argc, argv, "f:hr:t:vw")) != -1) {
     switch (opt) {
       case 'd':
         (void)strlcpy(dir, optarg, PATH_MAX);
@@ -168,6 +170,16 @@ main(int argc, char **argv)
         break;
       case 'h':
         usage(EX_OK);
+        break;
+      case 'r':
+        rtimeout = strtonum(optarg, 1, UINT32_MAX, &er);
+        if (er != NULL)
+          err(EX_USAGE, "%s", optarg);
+        break;
+      case 't':
+        timeout = strtonum(optarg, 1, UINT_MAX, &er);
+        if (er != NULL)
+          err(EX_USAGE, "%s", optarg);
         break;
       case 'v':
         verbose = 1;
@@ -212,14 +224,34 @@ main(int argc, char **argv)
       errx(EX_SOFTWARE, "this should not have happened");
   }
 
-  switch(pid = fork()) {
-  case -1:			/* error */
-    warn(NULL);
-    break;
-  case 0:				/* child */
-    execvp(exe, argv);
-    ret = (errno == ENOENT) ? EX_USAGE : EX_OSERR;
-    err(ret, "failed to run %s", exe);
+  if (rtimeout != 0) {
+    if (timeout + rtimeout > UINT_MAX)
+      errx(EX_USAGE, "%zu: timeout too long", timeout + rtimeout);
+    else
+      timeout += arc4random_uniform(rtimeout);
+  }
+
+  if (timeout > 0) {
+    if (verbose)
+      warnx("sleeping for %zu seconds", timeout);
+    if ((timeout = sleep(timeout))) {
+      if (unlink(fn))
+        warn(NULL);
+      if (verbose)
+        errx(EX_SOFTWARE, "sleep was interrupted");
+      else
+        return EX_SOFTWARE;
+    }
+  }
+
+  switch (pid = fork()) {
+    case -1:			/* error */
+      warn(NULL);
+      break;
+    case 0:				/* child */
+      execvp(exe, argv);
+      ret = (errno == ENOENT) ? EX_USAGE : EX_OSERR;
+      err(ret, "failed to run %s", exe);
   }
 
   /* parent */
@@ -235,6 +267,5 @@ out:
 
   return ret;
 }
-
 
 /* vim:set tw=78 sts=2 ts=2 sw=2 et ci: */
